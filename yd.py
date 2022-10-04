@@ -14,17 +14,7 @@ for laptop in laptops:
     a=list(map(lambda lap:"https://www.trendyol.com" +lap.find("a").get("href"),link)) 
     print(a)
 
-    """for j in a:
-        r1=requests.get(a[j])
-        p=BeautifulSoup(r1.content,"lxml")
-        ayr=p.find_all("ul",attrs={"class":"detail-attr-container"})
-        for ayr2 in ayr:
-            detay=ayr2.find_all("li")
-            for i in detay:
-                son=i.find("span").text
-                son2=i.find("b").text
-        
-                print(f"{son}={son2}")"""
+
 
 
    
