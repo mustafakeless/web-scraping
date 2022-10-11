@@ -7,35 +7,38 @@ import sqlite3
 
 con = sqlite3.connect("laptops.db")
 cursor = con.cursor()
-p=1
 for page in range(1,4):
     url="https://www.n11.com/bilgisayar/dizustu-bilgisayar?ipg={}".format(page)
     print(url)
     r=requests.get(url).text
     s=BeautifulSoup(r,"lxml")
     laptops=s.find_all("li",attrs={"class":"column"})
-    linklist=[]
+    links=[]       
     for laptop in laptops:
         link=laptop.find_all("div",attrs={"class":"pro"})
-        for f in link:
+        links.append(laptop.a.get("href"))
+        """for f in link:
                 a=list(map(lambda lap: lap.find("a").get("href"),link))
                 for u in a:
                     new_string = u.replace("['","").replace("']","")
-                    linklist.append(new_string)  
+                    linklist.append(new_string)  """
     #print(linklist)
-    for a in linklist:
+    for a in links:
         r1=requests.get(a)
         s1=BeautifulSoup(r1.content,"lxml")
         ayr=s1.find_all("div",attrs={"class":"unf-prop-context"})
-        #fiyat=s1.find("div",attrs={"class":"newPrice"}).text.replace("TL","").replace(",99","")
+        """
+        fiyat1=s1.find("div",attrs={"class":"newPrice"})
+        fiyat=fiyat1.find("ins").text
+        print(fiyat)"""
         #marka=s1.find("h1",attrs={"class":"proName"}).text.split(" ")
         #print(marka[0])
-        
-        """try:
-            puan=s1.find("strong").text
+        rating=s1.find("div",attrs={"class":"ratingCont"})
+        try:
+            puan=rating.find("strong").text
         except:
-            puan="NR"
-        print(float(puan))"""
+            puan=""
+        print(float(puan))
         
         for ayr2 in ayr:
             detay=ayr2.find_all("li",attrs={"class":"unf-prop-list-item"})
@@ -97,11 +100,11 @@ for page in range(1,4):
         a=0
         print(islemcitipi,isletimsistemi,diskturu,ram,diskboyutu,ekranboyutu,islemcinesli)
         def degerekle():
-                cursor.execute("INSERT INTO laptop VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", (marka,marka,model,isletimsistemi,islemcitipi,islemcinesli,ram,diskboyutu,diskturu,ekranboyutu,9.0,0.0,'n11'))
+                cursor.execute("INSERT INTO laptop VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", (marka,marka,model,isletimsistemi,islemcitipi,islemcinesli,ram,diskboyutu,diskturu,ekranboyutu,puan,0.0,'n11'))
                 con.commit()
                 #con.close()      
         degerekle()
-    p=p+1
+    
 
 
                  

@@ -5,32 +5,33 @@ import sqlite3
 
 con = sqlite3.connect("laptops.db")
 cursor = con.cursor()
-p=1
-while p<=3:
-    url=("https://www.trendyol.com/laptop-x-c103108?pi="+str(p)+"")
+
+for page in range(1,5):
+    url="https://www.trendyol.com/laptop-x-c103108?pi={}".format(page)
     print(url)
     r=requests.get(url)
     #print(r.status_code)
     s=BeautifulSoup(r.content,"lxml")
     laptops=s.find_all("div",attrs={"class":"p-card-wrppr with-campaign-view"})
-    linklist=[]
+    links=[]
     for laptop in laptops:
         link=laptop.find_all("div",attrs={"class":"p-card-chldrn-cntnr card-border"})
-        for f in link:
+        links.append("https://www.trendyol.com"+laptop.a.get("href"))
+    
+    """for f in link:
                 l=list(map(lambda lap:"https://www.trendyol.com" + lap.find("a").get("href"),link))
                 for u in l:
                     new_string = u.replace("['","").replace("']","")
-                    linklist.append(new_string)  
-    #print(linklist)
-    for l in linklist:
+                    linklist.append(new_string) """ 
+    for l in links:
         r1=requests.get(l)
         s1=BeautifulSoup(r1.content,"lxml")
         ayr=s1.find_all("ul",attrs={"class":"detail-attr-container"})
         fiyat=s1.find("span",attrs={"class":"prc-dsc"}).text.replace("TL","")
         marka=s1.find("h1",attrs={"class":"pr-new-br"}).text.split(" ")
         print(marka[0])
-
-        """puan=s1.find("span",attrs={"class":"tltp-avg-cnt"}).text
+        """rating=s1.find("span",attrs={"class":"avg-rt-txt-tltp"})
+        puan=rating.find("span",attrs={"class":"tltp-avg-cnt"}).text
         print(puan)"""
         print(fiyat)
         for ayr2 in ayr:
@@ -76,18 +77,24 @@ while p<=3:
                     islemcinesli=list1[a]
                 a=a+1                 
         a=0
+        ssdiskboyutu="" 
         for j8 in list:
                 if j8=="SSD Kapasitesi":
                     ssdiskboyutu=list1[a]
                     if ssdiskboyutu=="SSD Yok":
-                        ssdiskboyutu=""     
+                        ssdiskboyutu="" 
+                    elif ssdiskboyutu=="Yok":
+                           ssdiskboyutu=""     
                 a=a+1                 
         a=0
+        hddiskboyutu=""  
         for j8 in list:
                 if j8=="Hard Disk Kapasitesi":
                     hddiskboyutu=list1[a]
                     if hddiskboyutu=="HDD Yok":
-                        hddiskboyutu=""         
+                        hddiskboyutu=""
+                    elif hddiskboyutu=="Yok":
+                           hddiskboyutu=""     
                 a=a+1                 
         a=0
         for j2 in list1:
@@ -101,7 +108,10 @@ while p<=3:
                     break
                 else:
                     diskturu="HDD+SSD"
-                    diskboyutu=hddiskboyutu+"+"+ssdiskboyutu        
+                    if hddiskboyutu=="":
+                        diskboyutu=ssdiskboyutu
+                    else:
+                        diskboyutu=hddiskboyutu+"+"+ssdiskboyutu        
                 a=a+1           
         a=0
         print(islemcitipi,isletimsistemi,diskturu,ram,diskboyutu,ekranboyutu,islemcinesli)
@@ -110,8 +120,6 @@ while p<=3:
                 con.commit()
                 #con.close()      
         degerekle()
-    p=p+1
-        #print(l)
 
 
 
