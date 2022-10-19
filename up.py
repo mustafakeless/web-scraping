@@ -4,10 +4,21 @@ import requests
 from bs4 import BeautifulSoup
 import sqlite3
 import re
+from flask import Flask , render_template
+from flask_sqlalchemy import SQLAlchemy
 con = sqlite3.connect("laptops.db")
 cursor = con.cursor()
 cursor.execute("CREATE TABLE IF NOT EXISTS laptop (Marka TEXT, ModelAdı TEXT, ModelNo TEXT UNIQUE, İşletimsistemi TEXT,İşlemcitipi TEXT,İşlemcinesli TEXT,RAM INT,DiskBoyutu INT,DiskTürü TEXT,EkranBoyutu FLOAT,Puanı FLOAT,Fiyat INT,Site TEXT)")
 header={"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36"}
+
+app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////C:/Users/cagla/Desktop/web-scraping-main/laptops.db"
+db = SQLAlchemy(app)
+db.init_app(app)
+
+@app.route("/")
+def index():
+    return render_template("index.html")
 
 def Teknosa():
     for page in range(0,2): 
@@ -703,9 +714,3 @@ def Hepsiburada():
             except:
                 pass  
 Hepsiburada()
-
-                 
-       
-                
-
-    
