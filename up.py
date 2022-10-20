@@ -14,11 +14,10 @@ header={"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////C:/Users/cagla/Desktop/web-scraping-main/laptops.db"
 db = SQLAlchemy(app)
-db.init_app(app)
 
-@app.route("/")
-def index():
-    return render_template("index.html")
+with app.app_context():
+    db.init_app(app)
+
 
 def Teknosa():
     for page in range(0,2): 
@@ -178,7 +177,7 @@ def Teknosa():
             except:
                 pass    
 
-Teknosa()        
+#Teknosa()        
 
 def Trendyol():
     for page in range(1,4): 
@@ -292,7 +291,7 @@ def Trendyol():
             ssdiskboyutu="" 
             hddiskboyutu="" 
             diskboyutu=""
-            
+            diskturu=""
             t=0
             for j8 in list:
                     if j8=="SSD Kapasitesi":
@@ -359,7 +358,7 @@ def Trendyol():
                         diskturu="SSD"        
             except:
                 pass
-                            
+
             print(islemcitipi,isletimsistemi,diskturu,ram,diskboyutu,ekranboyutu,islemcinesli)
             def degerekle():
                     cursor.execute("INSERT INTO laptop VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", (marka[0],marka[1],model.group().upper(),isletimsistemi,islemcitipi,islemcinesli.replace(". Nesil",""),ram,diskboyutu,diskturu,ekranboyutu,9.0,fiyats.group(),'Trendyol'))
@@ -370,7 +369,7 @@ def Trendyol():
             except:
                 pass            
            
-Trendyol()
+#Trendyol()
 
 def n11():
     for page in range(1,4):
@@ -536,7 +535,7 @@ def n11():
             except:
                 pass
           
-n11()       
+#n11()       
 
 def Hepsiburada():
     for page in range(1,3):
@@ -713,4 +712,18 @@ def Hepsiburada():
                 degerekle()
             except:
                 pass  
-Hepsiburada()
+#Hepsiburada()
+
+@app.route("/")
+def index():
+    laptopss = laptops.query.all()
+    return render_template("index.html",laptopss=laptopss)
+
+def run():
+    Teknosa()
+    Trendyol()
+    n11()
+    Hepsiburada()
+
+if __name__ == "__main__":
+    run()
