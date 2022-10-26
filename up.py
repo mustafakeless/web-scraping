@@ -1,3 +1,5 @@
+
+
 from email import header
 from turtle import title
 from unittest import result
@@ -708,7 +710,7 @@ def title():
      
      print(laptopid)
      new_strings=[]
-     # virgülü almaması için i[0] yazılı
+     # virgülü almaması için i[0] yazılıgit
      for i in laptopid:
         new_strings.append(i[0])
 
