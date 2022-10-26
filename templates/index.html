@@ -74,9 +74,11 @@
        </div>
 
       <div>
+        {%for i in resultList %}
         <ul class="list-group">
         <!-- 24tane olduğunu düşün -->
-            <li class="list-group-item"><a href="laptopunbulundugusiteninlinkiverilecek" title="baslık"><h3>{{.}}</h3></a>
+        
+            <li class="list-group-item"><a href="laptopunbulundugusiteninlinkiverilecek" title="baslık"><h3> {{ i }}  </h3></a>
                 <div>
                     <ul class="list-group list-group-horizontal">
                         <li><a href="n11laptopunlinki" title="Satıcıya Git" rel="nofollow">15.149<i>,99 TL</i><span class="l"><i><img alt="N11" src="//cdn.akakce.com/im/m6/11070.svg"></i></span></a></li>
@@ -85,7 +87,9 @@
                     </ul>
                 </div>
             </li>
+            
         </ul>
+        {% endfor %}
 
         <ul class="list-group">
             <!-- 24tane olduğunu düşün -->
@@ -144,3 +148,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>  
 </body>
 </html>
+<script>
+
+
+
+</script>
