@@ -708,7 +708,7 @@ def title():
      
      print(laptopid)
      new_strings=[]
-     # virgülü almaması için i[0] yazılır
+     # virgülü almaması için i[0] yazılı
      for i in laptopid:
         new_strings.append(i[0])
 
