@@ -19,7 +19,7 @@
           </button>
           <div class="collapse navbar-collapse" id="mynavbar">
             <form class="d-flex" action="/ara"  method="POST" style="margin-left:auto">
-              <input class="form-control me-12" type="search" placeholder="Search" name="srcheck">
+              <input class="form-control me-12" type="search" placeholder="Search" name="srcc">
               <button class="btn btn-primary" type="submit">Search</button>
             </form>
           </div>
@@ -58,7 +58,6 @@
                     <div><input class="form-check-input" style="margin-right: 2px;" type="checkbox" value="6" name="mfcheck"><label>Lenovo</label></div>
                     <div><input class="form-check-input" style="margin-right: 2px;" type="checkbox" value="7" name="mfcheck"><label>MSI</label></div>
                     <div><input class="form-check-input" style="margin-right: 2px;" type="checkbox" value="8" name="mfcheck"><label>Monster</label></div>
-                    <div><input class="form-check-input" style="margin-right: 2px;" type="checkbox" value="9" name="mfcheck"><label>Dell</label></div>
                     <input style="margin-left: 10px;background-color:rgb(133, 106, 188);color: aliceblue;border: 0px;border-radius: 5px;margin:auto;font-size: 0.875em; margin-top:5px;" type="submit" value="Marka Filtrele">  
                   </form>
                 </div>
@@ -72,6 +71,40 @@
                       <input style="margin-left: 10px;background-color:rgb(133, 106, 188);color: aliceblue;border: 0px;border-radius: 5px;margin:auto;font-size: 0.875em;margin-top:5px;" type="submit" value="Site Filtrele">  
                     </form>
                   </div>
+                  <div id="ramfiltre" style="background-color:rgb(204, 186, 240);padding: 10px" >
+                    <form action="/ram_filtrele"  method="POST">
+                        <b>RAM</b>
+                        <div><input class="form-check-input" style="margin-right: 2px;" type="checkbox" value="1" name="rfcheck"><label>0-8</label></div>
+                        <div><input class="form-check-input" style="margin-right: 2px;" type="checkbox" value="2" name="rfcheck"><label>8-16</label></div>
+                        <div><input class="form-check-input" style="margin-right: 2px;" type="checkbox" value="3" name="rfcheck"><label>16-32</label></div>
+                        <div><input class="form-check-input" style="margin-right: 2px;" type="checkbox" value="4" name="rfcheck"><label>32-64</label></div>
+                        <div><input class="form-check-input" style="margin-right: 2px;" type="checkbox" value="5" name="rfcheck"><label>64+</label></div>
+                        <input style="margin-left: 10px;background-color:rgb(133, 106, 188);color: aliceblue;border: 0px;border-radius: 5px;margin:auto;font-size: 0.875em;margin-top:5px;" type="submit" value="RAM Filtrele">  
+                      </form>
+                    </div>
+
+                    <div id="diskfiltre" style="background-color:rgb(204, 186, 240);padding: 10px" >
+                      <form action="/disk_filtrele"  method="POST">
+                          <b>Disk Boyutu</b>
+                          <div><input class="form-check-input" style="margin-right: 2px;" type="checkbox" value="1" name="dfcheck"><label>128-256</label></div>
+                          <div><input class="form-check-input" style="margin-right: 2px;" type="checkbox" value="2" name="dfcheck"><label>256-512</label></div>
+                          <div><input class="form-check-input" style="margin-right: 2px;" type="checkbox" value="3" name="dfcheck"><label>512-1TB</label></div>
+                          <div><input class="form-check-input" style="margin-right: 2px;" type="checkbox" value="4" name="dfcheck"><label>1TB+</label></div>
+                          <input style="margin-left: 10px;background-color:rgb(133, 106, 188);color: aliceblue;border: 0px;border-radius: 5px;margin:auto;font-size: 0.875em;margin-top:5px;" type="submit" value="Disk Filtrele">  
+                        </form>
+                      </div>
+
+                      <div id="isletimfiltre" style="background-color:rgb(204, 186, 240);padding: 10px" >
+                        <form action="/isletim_filtrele"  method="POST">
+                            <b>Disk Boyutu</b>
+                            <div><input class="form-check-input" style="margin-right: 2px;" type="checkbox" value="1" name="ifcheck"><label>Windows</label></div>
+                            <div><input class="form-check-input" style="margin-right: 2px;" type="checkbox" value="2" name="ifcheck"><label>macOS</label></div>
+                            <div><input class="form-check-input" style="margin-right: 2px;" type="checkbox" value="3" name="ifcheck"><label>Ubuntu</label></div>
+                            <div><input class="form-check-input" style="margin-right: 2px;" type="checkbox" value="4" name="ifcheck"><label>Free Dos</label></div>
+                            <input style="margin-left: 10px;background-color:rgb(133, 106, 188);color: aliceblue;border: 0px;border-radius: 5px;margin:auto;font-size: 0.875em;margin-top:5px;" type="submit" value="Disk Filtrele">  
+                          </form>
+                        </div>
+
                 </div>
                   <div style="width:100%;" >
   <table id="data" class="table table-striped" style="width:100%;" >
@@ -81,6 +114,7 @@
         <th>Model</th>
         <th>Fiyat</th>
         <th>Site</th>
+        <th>Puan</th>
         
       </tr>
     </thead>
@@ -88,9 +122,10 @@
       {% for laptop in laptops %}
         <tr>
           <td>{{ laptop.Marka }}</td>
-          <td>{{ laptop.ModelNo }}</td>
+          <td><a href="/{{ laptop.ModelNo }}" name="mdcheck" value="{{ laptop.ModelNo }}">{{ laptop.ModelNo }}</a></td>
           <td>{{ laptop.Fiyat }}</td>
-          <td>{{ laptop.Site }}</td>
+          <td><a href="{{ laptop.Link}}">{{ laptop.Site }}</a></td>
+          <td>{{ laptop.Puan }}</td>
         </tr>
       {% endfor %}
     </tbody>
