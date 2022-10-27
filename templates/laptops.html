@@ -9,12 +9,12 @@
     <title>Web Scraping</title> 
 </head>
 
+
 <body>
-    <form class="d-flex">
-      <form action="/ara"  method="POST">
-      <input class="form-control me-2" type="search" placeholder="Aramak için yaz" name="srcheck">
-      <button class="btn btn-primary" type="submit">Ara</button>
-    </form>
+  <form action="/ara"  method="POST">
+    <input class="form-control form-control-lg" type="text" name="srcc" placeholder="Marka,Model No,Site">
+    <button type="submit" class="btn btn-primary">Ara</button>
+  </form>
     <div>
       <form action="/fiyat_sırala"  method="POST">
       <ul class="list-group list-group-horizontal  justify-content-center" class="./">
@@ -66,6 +66,8 @@
         <th>Model</th>
         <th>Fiyat</th>
         <th>Site</th>
+        <th>Puan</th>
+
         
       </tr>
     </thead>
@@ -73,9 +75,10 @@
       {% for laptop in laptops %}
         <tr>
           <td>{{ laptop.Marka }}</td>
-          <td>{{ laptop.ModelNo }}</td>
+          <td><a href="/{{ laptop.ModelNo }}" name="mdcheck" value="{{ laptop.ModelNo }}">{{ laptop.ModelNo }}</a></td>
           <td>{{ laptop.Fiyat }}</td>
           <td>{{ laptop.Site }}</td>
+          <td>{{ laptop.Puan }}</td>
         </tr>
       {% endfor %}
     </tbody>
