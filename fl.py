@@ -22,7 +22,7 @@ with app.app_context():
 
 @app.route("/",methods=['GET','POST'])     
 def index():
-    laptops = session.query(Laptop).order_by(Laptop.ModelNo.asc()).order_by(Laptop.Fiyat.asc())   
+    laptops = session.query(Laptop).order_by(Laptop.ModelNo.asc()).order_by(Laptop.Fiyat.asc())
     return render_template('laptops.html',laptops=laptops)
 
 @app.route("/fiyat_sırala",methods=['GET','POST'])                         
@@ -36,13 +36,50 @@ def fiyatsıralama():
 @app.route("/ara",methods=['GET','POST'])     
 def arama():
     src0=request.form.get("srcc")
-    if src0=="Apple" or src0=="Monster" or src0=="MSI" or src0=="Casper" or src0=="Acer" or src0=="Asus" or src0=="HP" or src0=="Lenovo" or src0=="Dell":
+    if src0=="Apple" or src0=="Monster" or src0=="MSI" or src0=="Casper" or src0=="Acer" or src0=="Asus" or src0=="HP" or src0=="Lenovo":
         src=session.query(Laptop).filter(Laptop.Marka.contains(src0)) 
     elif src0=="Hepsiburada" or src0=="Vatan"or src0=="Trendyol"or src0=="Teknosa":
         src=session.query(Laptop).filter(Laptop.Site.contains(src0))     
     else: 
         src=session.query(Laptop).filter(Laptop.ModelNo.contains(src0)) 
-    return render_template('laptops.html',laptops=src)                    
+    return render_template('laptops.html',laptops=src) 
+@app.route("/ram_filtrele",methods=['GET','POST'])                         
+def ramfiltre():
+    if request.form.get("rfcheck")=="1":
+        sırala=session.query(Laptop).filter(or_(Laptop.RAM=="4 GB",Laptop.RAM=="8 GB"))
+    if request.form.get("rfcheck")=="2":
+        sırala=session.query(Laptop).filter(or_(Laptop.RAM=="8 GB",Laptop.RAM=="12 GB",Laptop.RAM=="16 GB"))
+    if request.form.get("rfcheck")=="3":
+        sırala=session.query(Laptop).filter(or_(Laptop.RAM=="16 GB",Laptop.RAM=="20 GB",Laptop.RAM=="24 GB",Laptop.RAM=="32 GB"))
+    if request.form.get("rfcheck")=="4":
+        sırala=session.query(Laptop).filter(or_(Laptop.RAM=="32 GB",Laptop.RAM=="40 GB",Laptop.RAM=="64 GB"))
+    if request.form.get("rfcheck")=="5":
+        sırala=session.query(Laptop).filter(or_(Laptop.RAM=="64 GB",Laptop.RAM=="128 GB")) 
+    return render_template('laptops.html',laptops=sırala) 
+@app.route("/disk_filtrele",methods=['GET','POST'])                         
+def diskfiltre():
+    if request.form.get("dfcheck")=="1":
+        sırala=session.query(Laptop).filter(or_(Laptop.DiskBoyutu=="128 GB",Laptop.DiskBoyutu=="256 GB",Laptop.DiskBoyutu=="240 GB",Laptop.DiskBoyutu=="256",Laptop.DiskBoyutu=="250 GB"))
+    if request.form.get("dfcheck")=="2":
+        sırala=session.query(Laptop).filter(or_(Laptop.DiskBoyutu=="256 GB",Laptop.DiskBoyutu=="512 GB",Laptop.DiskBoyutu=="256"))
+    if request.form.get("dfcheck")=="3":
+        sırala=session.query(Laptop).filter(or_(Laptop.DiskBoyutu=="512 GB",Laptop.DiskBoyutu=="1 TB"))
+    if request.form.get("dfcheck")=="4":
+        sırala=session.query(Laptop).filter(or_(Laptop.DiskBoyutu=="1 TB",Laptop.DiskBoyutu=="2 TB",Laptop.DiskBoyutu=="4 TB"))
+    return render_template('laptops.html',laptops=sırala)     
+
+@app.route("/isletim_filtrele",methods=['GET','POST'])                         
+def isletimfiltre():
+    if request.form.get("ifcheck")=="1":
+        sırala=session.query(Laptop).filter(or_(Laptop.İşletimsistemi=="Windows",Laptop.İşletimsistemi=="Windows 11"))
+    if request.form.get("ifcheck")=="2":
+        sırala=session.query(Laptop).filter(or_(Laptop.İşletimsistemi=="macOS",Laptop.İşletimsistemi=="Mac Os"))
+    if request.form.get("ifcheck")=="3":
+        sırala=session.query(Laptop).filter(or_(Laptop.İşletimsistemi=="Ubuntu",Laptop.İşletimsistemi=="Linux"))
+    if request.form.get("ifcheck")=="4":
+        sırala=session.query(Laptop).filter(or_(Laptop.İşletimsistemi=="Free Dos",Laptop.İşletimsistemi=="FreeDOS")) 
+    return render_template('laptops.html',laptops=sırala) 
+
 @app.route("/site_filtrele",methods=['GET','POST'])                         
 def sitefiltre():
     if request.form.get("sfcheck")=="1":
@@ -84,9 +121,7 @@ def markafiltre():
     if request.form.get("mfcheck")=="7":
         sırala=session.query(Laptop).filter((Laptop.Marka=="MSI"))
     if request.form.get("mfcheck")=="8":
-        sırala=session.query(Laptop).filter(or_(Laptop.Marka=="Monster", Laptop.Marka=="MONSTER"))
-    if request.form.get("mfcheck")=="9":
-        sırala=session.query(Laptop).filter(or_(Laptop.Marka=="Dell", Laptop.Marka=="DELL"))        
+        sırala=session.query(Laptop).filter(or_(Laptop.Marka=="Monster", Laptop.Marka=="MONSTER"))       
     return render_template('laptops.html',laptops=sırala)         
     
 class Laptop(Base):
@@ -105,8 +140,9 @@ class Laptop(Base):
     Puan= Column(String(50)) 
     Fiyat= Column(Integer) 
     Site= Column(String(50)) 
+    Link= Column(String(50))
     def __repr__(self):
-        return "<Laptop(Marka='%s', ModelAdı='%s',ModelNo='%s', İşletimsistemi='%s',İşlemcitipi='%s', İşlemcinesli='%s',RAM='%s', DiskBoyutu='%s',DiskTürü='%s', EkranBoyutu='%s',Puan='%s', Fiyat='%s', Site='%s')>" % (
+        return "<Laptop(Marka='%s', ModelAdı='%s',ModelNo='%s', İşletimsistemi='%s',İşlemcitipi='%s', İşlemcinesli='%s',RAM='%s', DiskBoyutu='%s',DiskTürü='%s', EkranBoyutu='%s',Puan='%s', Fiyat='%s', Site='%s',Link='%s')>" % (
             self.Marka, 
             self.ModelAdı, 
             self.ModelNo,
@@ -119,20 +155,10 @@ class Laptop(Base):
             self.EkranBoyutu,
             self.Puan,
             self.Fiyat, 
-            self.Site, 
+            self.Site,
+            self.Link, 
          ) 
-class TitleNoLink(Base):
-    __tablename__ = "titlenolink"
-    id2 = Column(Integer , primary_key = True , nullable=False)
-    ModelNo= Column(String(50),unique=True) 
-    Title= Column(String(150)) 
-    Link= Column(String(150)) 
-    def __repr__(self):
-        return "<TitleNoLink(ModelNo='%s', Title='%s',Link='%s')>" % (
-            self.ModelNo, 
-            self.Title, 
-            self.Link,
-         ) 
+
 Base.metadata.create_all(engine) 
 Session = sessionmaker(bind=engine)
 Session.configure(bind=engine)
@@ -144,7 +170,7 @@ def ayrıntı(Modell):
     return render_template('ayrıntı.html',laptops=laptops) 
 
 def Trendyol():
-    for page in range(1,20): 
+    for page in range(1,41): 
         url="https://www.trendyol.com/laptop-x-c103108?pi={}".format(page)
         print(url)
         r=requests.get(url)
@@ -206,12 +232,12 @@ def Trendyol():
                     modelno=model.group()
                 except:
                     pass 
-            if marka[0]=="Dell":    
+            """if marka[0]=="Dell":    
                 try:
                     model=re.search(r"X?P?\w?\d\d\w?\w?\w\w\w\w\w?\w?\w?\w?\w?\w?",title)
                     modelno=model.group()
                 except:
-                    pass
+                    pass"""
             if marka[0]=="Casper":     
                 try:
                     model=re.search(r"[A-Z]\d\d\d.\d\d\d\d-\w\w\w0\w-?\w?-?\w?\d?\d?",title)
@@ -326,12 +352,9 @@ def Trendyol():
             print(islemcitipi,isletimsistemi,diskturu,ram,diskboyutu,ekranboyutu,islemcinesli)
             try:
                 if modelno!="":
-                        newlap=Laptop(Marka=marka[0],ModelAdı=modeladi,ModelNo=modelno.upper(),İşletimsistemi=isletimsistemi,İşlemcitipi=islemcitipi,İşlemcinesli=islemcinesli.replace(". Nesil",""),RAM=ram,DiskBoyutu=diskboyutu,DiskTürü=diskturu,EkranBoyutu=ekranboyutu,Puan="",Fiyat=fiyats.group(),Site="Trendyol")
+                        newlap=Laptop(Marka=marka[0],ModelAdı=modeladi,ModelNo=modelno.upper().replace("/","-"),İşletimsistemi=isletimsistemi,İşlemcitipi=islemcitipi,İşlemcinesli=islemcinesli.replace(". Nesil",""),RAM=ram,DiskBoyutu=diskboyutu,DiskTürü=diskturu,EkranBoyutu=ekranboyutu,Puan="",Fiyat=fiyats.group(),Site="Trendyol",Link=l)
                         session.add(newlap)
-                        session.commit()
-                        newlap1=Laptop(ModelNo=modelno.upper(),Title=title,Link=l)
-                        session.add(newlap1)
-                        session.commit()
+                        session.commit()                     
                         
             except:
                 pass
@@ -446,11 +469,8 @@ def Vatan():
                         modeladi=title[0]+title[1]
                         
                 try:
-                    newlap=Laptop(Marka=marka,ModelAdı=modeladi,ModelNo=model.upper(),İşletimsistemi=isletimsistemi,İşlemcitipi=islemcitipi,İşlemcinesli=islemcinesli.replace(". Nesil",""),RAM=ram,DiskBoyutu=diskboyutu,DiskTürü=diskturu,EkranBoyutu=ekranboyutu,Puan=puan,Fiyat=fiyatt,Site="Vatan")
+                    newlap=Laptop(Marka=marka,ModelAdı=modeladi,ModelNo=model.upper().replace("/","-"),İşletimsistemi=isletimsistemi,İşlemcitipi=islemcitipi,İşlemcinesli=islemcinesli.replace(". Nesil",""),RAM=ram,DiskBoyutu=diskboyutu,DiskTürü=diskturu,EkranBoyutu=ekranboyutu,Puan=puan,Fiyat=fiyatt,Site="Vatan",Link=l)
                     session.add(newlap)
-                    session.commit()
-                    newlap1=Laptop(ModelNo=model.upper(),Title=title1,Link=l)
-                    session.add(newlap1)
                     session.commit()
                 except:
                     pass    
@@ -460,7 +480,7 @@ def Vatan():
 
 
 def Hepsiburada():
-    for page in range(1,20):
+    for page in range(1,41):
         r=requests.get("https://www.hepsiburada.com/laptop-notebook-dizustu-bilgisayarlar-c-98?sayfa={}".format(page),headers=header)
         s=BeautifulSoup(r.content,"lxml")
         st1=s.find("div",attrs={"class":"productListContent-tEA_8hfkPU5pDSjuFdKG"})
@@ -553,7 +573,7 @@ def Hepsiburada():
             for j9 in list:
                     if j9=="Harddisk Kapasitesi":
                         hddiskboyutu=list1[a]
-                        if hddiskboyutu=="Yok":
+                        if hddiskboyutu=="Yok" or hddiskboyutu=="Belirtilmemiş":
                             hddiskboyutu=""
                             diskturu="SSD"
                             diskboyutu=ssdiskboyutu
@@ -610,12 +630,12 @@ def Hepsiburada():
                     modelno=model.group()
                 except:
                     modelno="" 
-            if marka[0]=="Dell":    
+            """if marka[0]=="Dell":    
                 try:
                     model=re.search(r"X?P?[a-zA-Z]\d\d\d\d\w\w\w\w\w\w\w\w\w\w",title)
                     modelno=model.group()
                 except:
-                    modelno=""
+                    modelno="""
             if marka[0]=="Casper":     
                 try:
                     model=re.search(r"[A-Z]\d\d\d.\d\d\d\d-\w\w\w0\w-?\w?G?g?-?F?f?",title)
@@ -641,12 +661,9 @@ def Hepsiburada():
             print(islemcitipi,isletimsistemi,diskturu,ram,diskboyutu,ekranboyutu,islemcinesli)
             try:
                 if modelno!="":
-                        newlap=Laptop(Marka=marka[0],ModelAdı=modeladi,ModelNo=modelno.upper(),İşletimsistemi=isletimsistemi,İşlemcitipi=islemcitipi,İşlemcinesli=islemcinesli.replace(". Nesil","").replace(".Nesil",""),RAM=ram,DiskBoyutu=diskboyutu,DiskTürü=diskturu,EkranBoyutu=ekranboyutu,Puan=puan,Fiyat=fiyats.group(),Site="Hepsiburada")
+                        newlap=Laptop(Marka=marka[0],ModelAdı=modeladi,ModelNo=modelno.upper().replace("/","-"),İşletimsistemi=isletimsistemi,İşlemcitipi=islemcitipi,İşlemcinesli=islemcinesli.replace(". Nesil","").replace(".Nesil",""),RAM=ram,DiskBoyutu=diskboyutu,DiskTürü=diskturu,EkranBoyutu=ekranboyutu,Puan=puan,Fiyat=fiyats.group(),Site="Hepsiburada",Link=l)
                         session.add(newlap)
-                        session.commit()
-                        newlap1=Laptop(ModelNo=modelno.upper(),Title=title,Link=l)
-                        session.add(newlap1)
-                        session.commit()
+                        session.commit()                     
             except:
                 pass
             modelno=""
@@ -656,7 +673,7 @@ def Hepsiburada():
 
 
 def Teknosa():
-    for page in range(0,20): 
+    for page in range(0,22): 
         url="https://www.teknosa.com/laptop-notebook-c-116004?s=%3Arelevance&page={}".format(page) 
         print(url)
         r=requests.get(url)
@@ -713,12 +730,12 @@ def Teknosa():
                     modelno=model.group()
                 except:
                     pass  
-            if marka=="Dell":
+            """ if marka=="Dell":
                 try:
                     model=re.search(r"X?P?\w?\d\d\w?\w?\w\w\w\w\w?\w?\w?\w?\w?\w?",title)
                     modelno=model.group()
                 except:
-                    pass 
+                    pass """
             if marka=="MSI":
                 try:
                     model=re.search(r"\w\d\w?[A-Z]?[A-Z]\w?\w?-\d\d\d\w?TR",title)
@@ -739,12 +756,6 @@ def Teknosa():
                 except:
                     pass
                 
-            
-            
-            #rating=s1.find("span",attrs={"class":"avg-rt-txt-tltp"})
-            #puan=rating.find("span",attrs={"class":"tltp-avg-cnt"}).text
-            #print(puan)
-            
             try:
                 fiyat=s1.find("div",attrs={"class":"prd-prc2"}).text
                 fiyats=re.search(r"\d?\d?\d.\d\d\d",fiyat)
@@ -823,17 +834,14 @@ def Teknosa():
                     modeladi=title1[1]
             try:
                 if modelno!="":
-                    newlap=Laptop(Marka=marka,ModelAdı=modeladi,ModelNo=modelno,İşletimsistemi=isletimsistemi,İşlemcitipi=islemcitipi.group(),İşlemcinesli=islemcineslis.group(),RAM=ram.group().replace(" RAM",""),DiskBoyutu=diskboyutu.replace(" SSD","").replace(" HDD","").replace(" NVMe",""),DiskTürü=diskturu,EkranBoyutu=ekranboyutu.group(),Puan="",Fiyat=fiyats.group(),Site="Teknosa")
+                    newlap=Laptop(Marka=marka,ModelAdı=modeladi,ModelNo=modelno.replace("/","-"),İşletimsistemi=isletimsistemi,İşlemcitipi=islemcitipi.group(),İşlemcinesli=islemcineslis.group(),RAM=ram.group().replace(" RAM",""),DiskBoyutu=diskboyutu.replace(" SSD","").replace(" HDD","").replace(" NVMe",""),DiskTürü=diskturu,EkranBoyutu=ekranboyutu.group(),Puan="",Fiyat=fiyats.group(),Site="Teknosa",Link=l)
                     session.add(newlap)
                     session.commit()
-                    newlap1=Laptop(ModelNo=modelno,Title=title,Link=l)
-                    session.add(newlap1)
-                    session.commit()
+                    
             except:
                 pass
             modelno=""
             modeladi=""    
-
 
 
 def run():
